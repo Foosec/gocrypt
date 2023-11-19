@@ -3,10 +3,9 @@ package gocrypt
 import (
 	"bytes"
 	"crypto/cipher"
+	"crypto/rand"
 	"errors"
 	"io"
-	"io/ioutil"
-	"math/rand"
 )
 
 var ErrUnknownCipherType error = errors.New("incorrect cipher type")
@@ -113,7 +112,7 @@ func (aw *AESWriter) Flush() (written int, err error) {
 	case streamCipherType:
 
 		dst := make([]byte, aw.buffer.Len())
-		src, _ := ioutil.ReadAll(&aw.buffer)
+		src, _ := io.ReadAll(&aw.buffer)
 		aw.stream.XORKeyStream(dst, src)
 
 		written, err := aw.downstream.Write(dst)
